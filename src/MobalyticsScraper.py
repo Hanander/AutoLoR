@@ -199,7 +199,7 @@ class MobalyticsScraper:
 
 
 if __name__ == "__main__":
-    chromeDriverPath = os.path.join('..', 'application', 'chromedriver')
+    chromeDriverPath = os.path.join('..', 'application', 'chromedriver.exe')
     outputFolderPath = os.path.join('..', 'cards')
 
     MobalyticsScraper.CollectData(outputFolderPath, chromeDriverPath)
