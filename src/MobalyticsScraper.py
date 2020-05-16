@@ -109,16 +109,27 @@ class MobalyticsScraper:
             img.save(imgPath, 'PNG')
 
     @staticmethod
+    def _FindReqElements(driver, className):
+        while True:
+            elements = driver.find_elements_by_class_name(className)
+            if len (elements) != 0:
+                break
+            time.sleep(MobalyticsScraper._DELAY_BETWEEN_PARSE)
+        return elements
+
+    @staticmethod
     def _ParseCard(driver, isAssociated=False):
         time.sleep(MobalyticsScraper._DELAY_BETWEEN_PARSE)
-        associatedCards = []
-        # check associated cards
-        associatedBox = driver.find_elements_by_class_name(MobalyticsScraper._CARD_ASSOCIATED_BOX)
-        childs = associatedBox[0].find_elements_by_css_selector('*')
-        # get images card and all associated elements
-        imgElements = driver.find_elements_by_class_name(MobalyticsScraper._CARD_IMG_CLASS)
-        cardsNumber = max(len(childs), 1)
-        for i in range(cardsNumber):
+        cardsNumber = 1
+        i = 0
+        while i < cardsNumber:
+            associatedCards = []
+            # check associated cards
+            associatedBox = MobalyticsScraper._FindReqElements(driver, MobalyticsScraper._CARD_ASSOCIATED_BOX)
+            childs = associatedBox[0].find_elements_by_css_selector('*')
+            # waiting and get images card and all associated elements
+            imgElements = MobalyticsScraper._FindReqElements(driver, MobalyticsScraper._CARD_IMG_CLASS)
+            cardsNumber = max(len(childs), 1)
             # open next associated card and wait loading
             if len(childs) > 0:
                 childs[i].click()
@@ -159,6 +170,7 @@ class MobalyticsScraper:
             card.info['mana cost'] = description.split('Mana Cost: ')[1]
             # add to cards list
             associatedCards.append(card)
+            i += 1
 
         return associatedCards
 
