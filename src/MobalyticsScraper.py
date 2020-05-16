@@ -66,8 +66,9 @@ class MobalyticsScraper:
 
         driver = MobalyticsScraper._StartChromeDriver(chromeDriverPath)
         driver.get(MobalyticsScraper._START_PAGE)
-
         cards = MobalyticsScraper._CollectCardsInfo(driver)
+        driver.close()
+        
         MobalyticsScraper._CollectCardsImg(outputFolderPath, cards)
 
         cardsJSON = {}
