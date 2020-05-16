@@ -121,10 +121,10 @@ class MobalyticsScraper:
     @staticmethod
     def _ParseCard(driver, isAssociated=False):
         time.sleep(MobalyticsScraper._DELAY_BETWEEN_PARSE)
+        associatedCards = []
         cardsNumber = 1
         i = 0
         while i < cardsNumber:
-            associatedCards = []
             # check associated cards
             associatedBox = MobalyticsScraper._FindReqElements(driver, MobalyticsScraper._CARD_ASSOCIATED_BOX)
             childs = associatedBox[0].find_elements_by_css_selector('*')
