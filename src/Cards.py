@@ -25,15 +25,15 @@ class CardManager:
     # ------------------------------------------------------------------------------------------------------------------
     # Public methods
     @staticmethod
-    def FilterCards(cardsJSON, fields):
+    def FilterCards(cards, fields):
         # iterate over cards and apply filter by each field
-        filtredKeys = []
-        for cardKey in cardsJSON.keys():
+        filtredCards = []
+        for card in cards:
             for fieldName in fields.keys():
-                if CardManager._FilterByField(cardsJSON[cardKey], fieldName, fields[fieldName]):
-                    filtredKeys.append(cardKey)
+                if CardManager._FilterByField(card, fieldName, fields[fieldName]):
+                    filtredCards.append(card)
         
-        return {cardKey: cardsJSON[cardKey] for cardKey in filtredKeys}
+        return filtredCards
                 
 
     @staticmethod
@@ -47,17 +47,17 @@ class CardManager:
     def _FilterByField(card, fieldName, fieldVals):
         # check field is not empty
         if fieldName == 'abilities':
-            if len(card[fieldName]) == 0:
+            if len(card.info[fieldName]) == 0:
                 return False
         else:
-            if card[fieldName] is None:
+            if card.info[fieldName] is None:
                 return False
         # check card has field val
         for val in fieldVals:
             if fieldName == 'abilities':
-                if val in card[fieldName]:
+                if val in card.info[fieldName]:
                     return True
             else:
-                if card[fieldName] == val:
+                if card.info[fieldName] == val:
                     return True
         return False
