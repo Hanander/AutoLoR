@@ -47,14 +47,19 @@ class CardManager:
 
     
     @staticmethod
-    def FilterCards(cards, fields):
+    def FilterCards(cards, fields, operator=any):
+        # set None by default for every card
+        filterResults = [None for _ in cards]
         # iterate over cards and apply filter by each field
-        filtredCards = []
-        for card in cards:
+        for i, card in enumerate(cards):
             for fieldName in fields.keys():
-                if CardManager._FilterByField(card, fieldName, fields[fieldName]):
-                    filtredCards.append(card)
-        
+                currentRes = CardManager._FilterByField(card, fieldName, fields[fieldName])
+                if filterResults[i] is None:
+                    filterResults[i] = currentRes
+                else:
+                    filterResults[i] = operator([currentRes, filterResults[i]])
+        filtredCards = [card for i, card in enumerate(cards) if filterResults[i]]
+
         return filtredCards
 
     @staticmethod
@@ -63,7 +68,6 @@ class CardManager:
     
     # ------------------------------------------------------------------------------------------------------------------
     # Private methods
-    
     @staticmethod
     def _FilterByField(card, fieldName, fieldVals):
         # check field is not empty
@@ -86,7 +90,7 @@ class CardManager:
 if __name__ == "__main__":
     cardsFolderPath = os.path.join('..', 'cards')
     cards = CardManager.LoadCards(cardsFolderPath)
-    filtredCards = CardManager.FilterCards(cards, {'type': ['Spell']})
+    filtredCards = CardManager.FilterCards(cards, {'type': ['Spell'], 'mana cost': ['6', '7']}, operator=all)
     print('n filtred cards = {}'.format(len(filtredCards)))
     print('first 3 card:')
     for card in filtredCards:
