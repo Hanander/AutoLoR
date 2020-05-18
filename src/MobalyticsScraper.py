@@ -112,9 +112,9 @@ class MobalyticsScraper:
                 childs[i].click()
                 if (i != 0):
                     time.sleep(MobalyticsScraper._DELAY_BETWEEN_PARSE)        
-            card = Card()
-            card.info['title'] = driver.find_element_by_class_name(MobalyticsScraper._CARD_TITLE_CLASS).text
-            card.info['title'] = card.info['title'].replace('> ', '')
+            parsedFields = {'abilities': []}
+            parsedFields['title'] = driver.find_element_by_class_name(MobalyticsScraper._CARD_TITLE_CLASS).text
+            parsedFields['title'] = parsedFields['title'].replace('> ', '')
             # get main info elements: region, type, rarity
             mainEls = driver.find_elements_by_class_name(MobalyticsScraper._CARD_MAIN_CLASS)
             # get stats info elements: health, attack
@@ -126,26 +126,27 @@ class MobalyticsScraper:
             for el in elements:
                 id = el.get_attribute('data-sel-id')
                 if id == 'cardType':
-                    card.info['type'] = el.text
+                    parsedFields['type'] = el.text
                 elif id == 'cardRegion':
-                    card.info['region'] = el.text
+                    parsedFields['region'] = el.text
                 elif id == 'cardRarity':
-                    card.info['rarity'] = el.text
+                    parsedFields['rarity'] = el.text
                 elif id == 'cardHealth':
-                    card.info['health'] = el.text
+                    parsedFields['health'] = el.text
                 elif id == 'cardAttack':
-                    card.info['attack'] = el.text
+                    parsedFields['attack'] = el.text
                 elif id == 'keyword':
-                    card.info['abilities'].append(el.text)
+                    parsedFields['abilities'].append(el.text)
             # get img link by associated img number i
             link = imgElements[i].get_attribute('src')
-            card.info['img link'] = link
-            card.id = link.split('/')[-1].split('.webp')[0]
+            parsedFields['img link'] = link
+            cardId = link.split('/')[-1].split('.webp')[0]
             # get content with full description (for mana cost)
             elements = driver.find_elements_by_name('description')
             description = elements[0].get_attribute('content')
-            card.info['mana cost'] = description.split('Mana Cost: ')[1]
+            parsedFields['mana cost'] = description.split('Mana Cost: ')[1]
             # add to cards list
+            card = Card(id=cardId, params=parsedFields)
             associatedCards.append(card)
             i += 1
 
