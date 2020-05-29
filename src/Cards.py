@@ -30,6 +30,7 @@ class Card:
         for fieldName in params:
             self.info[fieldName] = params[fieldName]
 
+
 class CardManager:
     # ------------------------------------------------------------------------------------------------------------------
     # Public methods
@@ -45,7 +46,6 @@ class CardManager:
         
         return cards
 
-    
     @staticmethod
     def FilterCards(cards, fields, operator=any):
         # set None by default for every card
@@ -86,6 +86,7 @@ class CardManager:
                 if card.info[fieldName] == val:
                     return True
         return False
+
 
 if __name__ == "__main__":
     cardsFolderPath = os.path.join('..', 'cards')
